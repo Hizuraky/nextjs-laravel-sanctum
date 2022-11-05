@@ -74,15 +74,16 @@ class Handler extends ExceptionHandler
     private function handleApiResponse($request, $e)
     {
         Log::error($e);
+        $isSanctumAuthorizationException = $e->guards() !== [] && $e->guards()[0] === "sanctum";
 
-        // 401 Unauthorized 認証情報エラー
-        if ($e instanceof AuthenticationException) {
+        // 401 Unauthentication 認証情報エラー
+        if ($e instanceof AuthenticationException && !$isSanctumAuthorizationException) {
             $statusCode = HttpResponse::HTTP_UNAUTHORIZED;
             return $this->apiErrorResponse($statusCode);
         }
 
-        // 403 Forbidden トークン関係の認可エラー
-        if ($e instanceof AuthorizationException) {
+        // 403 Forbidden 権限無し（未認証）
+        if ($e instanceof AuthorizationException || $isSanctumAuthorizationException) {
             $statusCode = HttpResponse::HTTP_FORBIDDEN;
             return $this->apiErrorResponse($statusCode);
         }

@@ -19,9 +19,9 @@ class UserTableSeeder extends Seeder
     {
         for ($i = 1; $i <=5; $i++) {
             DB::table('users')->insert([
-                'name' => $i - 1,
+                'name' => "user_".$i,
                 'email' => 'user' . $i . '@example.com',
-                'password' => Hash::make('aaaa'),
+                'password' => Hash::make('password'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

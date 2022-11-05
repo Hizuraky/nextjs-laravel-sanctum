@@ -1,8 +1,8 @@
-import { NextFetchEvent, NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import fetchAdapter from '@vespaiach/axios-fetch-adapter'
 import axios from 'axios'
 
-export async function middleware(req: NextRequest, ev: NextFetchEvent) {
+export async function middleware(req: NextRequest) {
   const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_ENDOPOINT,
     headers: {

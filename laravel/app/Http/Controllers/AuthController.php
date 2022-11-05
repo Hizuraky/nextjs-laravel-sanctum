@@ -28,8 +28,6 @@ class AuthController extends Controller
         };
 
         $request->session()->regenerate();
-        $user = Auth::user();
-        return User::getUserProfile($user->id);
     }
 
 
