@@ -38,6 +38,10 @@ laravel:
 web:
 	docker-compose exec web /bin/sh
 
+.PHONY:next
+next:
+	docker-compose exec next /bin/sh
+
 sql:
 	docker-compose exec mysql /bin/sh -c 'mysql -u ${DB_USER} -p${DB_PASSWORD}'
 

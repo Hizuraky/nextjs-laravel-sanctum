@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,15 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/test', [AuthController::class, 'test'])->name('test');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', [AuthController::class, 'me'])->name('me');
 });
 
-Route::get('test', static function () {
-    return array('sample test');
-});
 
-Route::post('test', static function(Request $request) {
-    $request->validate(['text' => 'required|string']);
-    return \App\Models\Sample::create(['text' => $request->input('text')]);
-});

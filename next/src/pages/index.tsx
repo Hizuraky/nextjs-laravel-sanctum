@@ -1,8 +1,71 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { apiClient, apiServer } from '@/utils/apiClient'
+import { useEffect } from 'react'
+import axios from 'axios'
+import Link from 'next/link'
 
-export default function Home() {
+// export async function getServerSideProps() {
+//   let data = {
+//     name: 'init',
+//     gender: 'init',
+//   }
+//   await apiClient
+//     .get('api/test')
+//     .then((res) => {
+//       data = {
+//         name: res.data.name,
+//         gender: res.data.gender,
+//       }
+//     })
+//     .catch((err) => {
+//       console.error(err)
+//     })
+//   return {
+//     props: {
+//       data,
+//     },
+//   }
+// }
+
+export default function Home(props: any) {
+  // console.log('props', props)
+
+  const fetcherGet = async (url: string) =>
+    apiClient
+      .get(url)
+      .then((res) => {
+        return res
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+  const fetcherPost = (url: string, body: Object = {}) =>
+    apiClient
+      .post(url, JSON.stringify(body))
+      .then((res) => {
+        return { data: res.data, err: undefined }
+      })
+      .catch((err) => {
+        return { data: null, err: err.response }
+      })
+
+  const fetch = async () => {
+    await fetcherGet('/sanctum/csrf-cookie')
+    const { data, err } = await fetcherPost('/api/login', {
+      email: 'user1@example.com',
+      password: 'aaaa',
+    })
+
+    console.log(data, err)
+  }
+
+  useEffect(() => {
+    // fetch()
+  }, [])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -12,9 +75,9 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href='https://nextjs.org'>Next.js!</a>
-        </h1>
+        <Link className={styles.title} href='/login'>
+          Welcome to Next.js!
+        </Link>
 
         <p className={styles.description}>
           Get started by editing <code className={styles.code}>pages/index.tsx</code>
