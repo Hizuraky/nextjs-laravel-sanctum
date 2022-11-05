@@ -3,6 +3,7 @@ import fetchAdapter from '@vespaiach/axios-fetch-adapter'
 import axios from 'axios'
 
 export async function middleware(req: NextRequest) {
+  // API設定
   const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_ENDOPOINT,
     headers: {
@@ -12,16 +13,19 @@ export async function middleware(req: NextRequest) {
     adapter: fetchAdapter,
   })
 
-  let response = NextResponse.next()
+  let nextResponse = NextResponse.next()
 
-  await api
-    .get('api/me')
-    .then(() => (response = NextResponse.next()))
-    .catch(() => (response = NextResponse.redirect(`http://localhost:3000/login`)))
+  // 403権限無しエラーであればリダイレクト
+  await api.get('api/user').catch(({ response }) => {
+    console.log(response)
 
-  return response
+    response.status === 403 &&
+      (nextResponse = NextResponse.redirect(`${process.env.APP_URL}auth/login`))
+  })
+
+  return nextResponse
 }
 
 export const config = {
-  matcher: '/',
+  matcher: ['/user'],
 }

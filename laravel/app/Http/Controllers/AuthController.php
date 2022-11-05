@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Support\Facades\Cookie;
+
 
 class AuthController extends Controller
 {
@@ -36,6 +38,7 @@ class AuthController extends Controller
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        return response()->noContent();
     }
 
     public function me()
