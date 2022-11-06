@@ -8,7 +8,6 @@ use Illuminate\Validation\ValidationException;
 use App\Rules\PasswordRule;
 use App\Rules\EmailUniqueRule;
 use App\Rules\EmailFormatRule;
-use Illuminate\Support\Arr;
 
 class RegisterRequest extends FormRequest
 {

@@ -104,7 +104,7 @@ class Handler extends ExceptionHandler
         // 422 Unprocessable バリデーションエラー
         if ($e instanceof ValidationException) {
             $statusCode = HttpResponse::HTTP_UNPROCESSABLE_ENTITY;
-            return $this->apiErrorResponse($statusCode, Arr::collapse($e->validator->errors()->messages()));
+            return $this->apiErrorResponse($statusCode, $e->validator->errors()->messages());
         }
 
         // 429 Too Many Requests 時間内のアクセス回数制限エラー

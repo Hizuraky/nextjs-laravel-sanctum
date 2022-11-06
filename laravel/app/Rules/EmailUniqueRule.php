@@ -26,7 +26,7 @@ class EmailUniqueRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $user = User::withTrashed()->where('email', $value)->first();
+        $user = User::where('email', $value)->first();
 
         if (!is_null($user)) {
             return false;
