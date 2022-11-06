@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Throwable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -45,5 +47,22 @@ class User extends Authenticatable
     public static function getUserProfile($userId)
     {
         return self::find($userId);
+    }
+
+    public static function createUser($request)
+    {
+        try {
+            $params = [
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password)
+            ];
+
+            $user = self::create($params);
+            return $user;
+
+        } catch (Throwable $e) {
+            throw $e;
+        }
     }
 }

@@ -1,5 +1,5 @@
 import styles from '@/styles/Home.module.css'
 
 export default function Home() {
-  return <h1 className={styles.title}>IndexPage</h1>
+  return <h1 className={styles.title}>Welcome to Next.js!</h1>
 }

@@ -4,7 +4,7 @@ export const fetcherGet = async (url: string) =>
   apiClient
     .get(url)
     .then((res) => {
-      return res
+      return res.data
     })
     .catch((err) => {
       if (err?.message.startsWith('Network Error')) err.response = { message: 'Network Error' }

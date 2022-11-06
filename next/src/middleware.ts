@@ -26,6 +26,7 @@ export async function middleware(req: NextRequest) {
   return nextResponse
 }
 
+// 下記ページへは未ログインでは遷移不可
 export const config = {
   matcher: ['/user'],
 }

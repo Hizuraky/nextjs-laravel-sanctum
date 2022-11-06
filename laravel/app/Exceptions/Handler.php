@@ -13,6 +13,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
 
 class Handler extends ExceptionHandler
 {
@@ -73,17 +74,17 @@ class Handler extends ExceptionHandler
      */
     private function handleApiResponse($request, $e)
     {
-        Log::error($e);
-        $isSanctumAuthorizationException = $e->guards() !== [] && $e->guards()[0] === "sanctum";
+        // Log::error($e);
 
         // 401 Unauthentication 認証情報エラー
-        if ($e instanceof AuthenticationException && !$isSanctumAuthorizationException) {
-            $statusCode = HttpResponse::HTTP_UNAUTHORIZED;
+        if ($e instanceof AuthenticationException) {
+            $isSanctumAuthorizationException = $e->guards() !== [] && $e->guards()[0] === "sanctum";
+            $statusCode = $isSanctumAuthorizationException ? HttpResponse::HTTP_FORBIDDEN : HttpResponse::HTTP_UNAUTHORIZED;
             return $this->apiErrorResponse($statusCode);
         }
 
         // 403 Forbidden 権限無し（未認証）
-        if ($e instanceof AuthorizationException || $isSanctumAuthorizationException) {
+        if ($e instanceof AuthorizationException) {
             $statusCode = HttpResponse::HTTP_FORBIDDEN;
             return $this->apiErrorResponse($statusCode);
         }
@@ -100,10 +101,10 @@ class Handler extends ExceptionHandler
             return $this->apiErrorResponse($statusCode);
         }
 
-        // 422 Unprocessable Entity バリデーションエラー
+        // 422 Unprocessable バリデーションエラー
         if ($e instanceof ValidationException) {
             $statusCode = HttpResponse::HTTP_UNPROCESSABLE_ENTITY;
-            return $this->apiErrorResponse($statusCode, $e->validator);
+            return $this->apiErrorResponse($statusCode, Arr::collapse($e->validator->errors()->messages()));
         }
 
         // 429 Too Many Requests 時間内のアクセス回数制限エラー
