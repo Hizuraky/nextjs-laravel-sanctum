@@ -12,7 +12,12 @@ build:
 	docker-compose exec laravel chmod -R 777 storage bootstrap/cache
 
 init:
+	@make init-local
+
+init-docker:
 	cp .env.example .env
+	cp ./laravel/.env.example ./laravel/.env
+	cp ./next/.env.example.docker ./next/.env
 	docker-compose up -d --build
 	docker-compose exec laravel composer install
 	docker-compose exec laravel cp .env.example .env
@@ -21,6 +26,21 @@ init:
 	docker-compose exec laravel chmod -R 777 storage bootstrap/cache
 	@make cache
 	@make fresh
+
+init-local:
+	cp .env.example .env
+	cp ./laravel/.env.example ./laravel/.env
+	cp ./next/.env.example.local ./next/.env
+	docker-compose -f docker-compose.local.yml up -d --build
+	docker-compose exec laravel composer install
+	docker-compose exec laravel cp .env.example .env
+	docker-compose exec laravel php artisan key:generate
+	docker-compose exec laravel php artisan storage:link
+	docker-compose exec laravel chmod -R 777 storage bootstrap/cache
+	@make cache
+	@make fresh
+	cd next && yarn && yarn dev
+	
 	
 down:
 	docker-compose down --remove-orphans

@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const router = useRouter()
 
   const handleRegistration = async () => {
-    await fetcherGet('/sanctum/csrf-cookie')
+    await fetcherGet('sanctum/csrf-cookie')
     const { err } = await fetcherPost('api/register', {
       name: name,
       email: email,

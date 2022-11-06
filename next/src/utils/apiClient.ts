@@ -12,5 +12,5 @@ const fetchSetting = (baseURL?: string) =>
     withCredentials: true,
   })
 
-export const apiClient = fetchSetting(process.env.NEXT_PUBLIC_API_ENDOPOINT)
-export const apiServer = fetchSetting(process.env.API_ENDOPOINT)
+export const apiClient = fetchSetting(process.env.NEXT_PUBLIC_API_ENDPOINT)
+export const apiServer = fetchSetting(process.env.API_SERVER_ENDPOINT)

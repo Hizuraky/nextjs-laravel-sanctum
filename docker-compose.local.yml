@@ -1,0 +1,49 @@
+version: "3"
+
+volumes:
+  php_socket:
+  data:
+networks:
+  web:
+    driver: bridge
+services:
+  laravel:
+    container_name: laravel
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - php_socket:/var/run/php-fpm
+      - ./laravel:/app
+    networks:
+      - web
+      
+  web:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    volumes:
+      - php_socket:/var/run/php-fpm
+    ports:
+      - "${WEB_PORT}:80"
+    depends_on:
+      - laravel
+    networks:
+      - web
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    volumes:
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    ports:
+      - "${DB_PORT}:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - TZ=${TZ}
+    networks:
+      - web

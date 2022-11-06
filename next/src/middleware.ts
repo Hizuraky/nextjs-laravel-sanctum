@@ -5,7 +5,7 @@ import axios from 'axios'
 export async function middleware(req: NextRequest) {
   // API設定
   const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_ENDOPOINT,
+    baseURL: process.env.API_SERVER_ENDPOINT,
     headers: {
       Cookie: req.headers.get('cookie') ?? '',
       referer: req.headers.get('referer') ?? '',
@@ -17,8 +17,6 @@ export async function middleware(req: NextRequest) {
 
   // 403権限無しエラーであればリダイレクト
   await api.get('api/user').catch(({ response }) => {
-    console.log(response)
-
     response.status === 403 &&
       (nextResponse = NextResponse.redirect(`${process.env.APP_URL}auth/login`))
   })
