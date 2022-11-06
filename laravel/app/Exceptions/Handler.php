@@ -13,7 +13,6 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Arr;
 
 class Handler extends ExceptionHandler
 {
@@ -74,10 +73,11 @@ class Handler extends ExceptionHandler
      */
     private function handleApiResponse($request, $e)
     {
-        // Log::error($e);
+        Log::error($e);
 
         // 401 Unauthentication 認証情報エラー
         if ($e instanceof AuthenticationException) {
+            // sanctumエラーは403にハンドリング
             $isSanctumAuthorizationException = $e->guards() !== [] && $e->guards()[0] === "sanctum";
             $statusCode = $isSanctumAuthorizationException ? HttpResponse::HTTP_FORBIDDEN : HttpResponse::HTTP_UNAUTHORIZED;
             return $this->apiErrorResponse($statusCode);
@@ -114,7 +114,7 @@ class Handler extends ExceptionHandler
             return $this->apiErrorResponse($statusCode);
         }
 
-        // 上記に該当しない500エラーの場合、ログを残す
+        // 上記に該当しない500エラー
         $statusCode = HttpResponse::HTTP_INTERNAL_SERVER_ERROR;
 
         return $this->apiErrorResponse($statusCode);

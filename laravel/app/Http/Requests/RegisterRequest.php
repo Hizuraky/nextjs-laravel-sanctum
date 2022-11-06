@@ -40,8 +40,8 @@ class RegisterRequest extends FormRequest
     public function messages()
     {
         return [
-            'required' => ':attributeは必ず指定してください。',
-            'max' => ':attributeは:max文字以下で指定してください。',
+            'required' => ':attributeは必須です。',
+            'max' => ':attributeは:max文字以下で入力してください。',
         ];
     }
 
